@@ -46,7 +46,8 @@ Các ảnh 03, 04, 05, 07, 08 được copy từ `C:/Users/ADMIN/Pictures/Screen
 - Đã đối chiếu hash dữ liệu JSON/CSV và ảnh với backup: bản local không đổi. `.gitattributes` giữ nguyên byte dữ liệu đo khi commit, gồm cả newline gốc Windows; không sửa số liệu để chữa cảnh báo whitespace của Git.
 - File `.env`, model weights, runtime và virtualenv không được track. Raw history/failures/exceptions CSV vẫn giữ trên máy nhưng được gitignore theo repo gốc.
 - Repo tên đúng mẫu, visibility PUBLIC đã được xác minh bằng GitHub CLI.
-- Đã commit kết quả base; đang hoàn tất commit checklist và newline preservation. Push/nộp LMS chưa thực hiện tại thời điểm ghi mục này.
+- Đã commit kết quả base, checklist và quy tắc giữ nguyên byte dữ liệu. Bản clone sạch của commit `a4f820c`, không có model/runtime/venv, chạy `lab.ps1 verify` exit 0.
+- Đang xuất bản các commit hoàn thiện lên origin/main; commit được xuất bản xem lịch sử Git. Chưa nộp URL vào LMS.
 - Không cần chạy lại phép đo hoặc làm bonus để đủ artifact base. Backup report trước khi hoàn thiện giữ trong `runtime/submission-backups/20261006-finalize/`.
 
 Các giới hạn bên trên vẫn cần giữ rõ trong báo cáo. `verify` pass xác nhận file và cấu trúc; không bảo đảm đáp án LLM đúng hoặc tự động bảo đảm điểm số.
