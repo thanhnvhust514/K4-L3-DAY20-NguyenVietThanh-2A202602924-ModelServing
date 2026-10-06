@@ -1,0 +1,136 @@
+{
+  "settings": {
+    "threads": 8,
+    "ngl": 99,
+    "ctx": 2048,
+    "max_tokens": 160,
+    "temperature": 0,
+    "seed": 42,
+    "reasoning": "off",
+    "port": 8097
+  },
+  "results": [
+    {
+      "quant": "Q4_K_M",
+      "id": "definitions",
+      "prompt": "Context: TTFT means Time To First Token: elapsed time from sending a request to receiving its first output token. TPOT means Time Per Output Token: average time per output token after the first. Using only this context, define TTFT and TPOT in two concise sentences. Do not invent alternative expansions.",
+      "expected": "Correct expansions and timing definitions for both TTFT and TPOT.",
+      "answer": "TTFT is the elapsed time from sending a request to receiving its first output token, while TPOT is the average time per output token after the first.",
+      "finish_reason": "stop",
+      "server_timings": {
+        "cache_n": 0,
+        "prompt_n": 88,
+        "prompt_ms": 280.905,
+        "prompt_per_token_ms": 3.1921022727272725,
+        "prompt_per_second": 313.27317064488,
+        "predicted_n": 32,
+        "predicted_ms": 411.442,
+        "predicted_per_token_ms": 13.272322580645161,
+        "predicted_per_second": 75.34476305287258
+      }
+    },
+    {
+      "quant": "Q4_K_M",
+      "id": "arithmetic",
+      "prompt": "Return only the integer result of 17 * 23 + 19.",
+      "expected": "410",
+      "answer": "501",
+      "finish_reason": "stop",
+      "server_timings": {
+        "cache_n": 14,
+        "prompt_n": 30,
+        "prompt_ms": 72.688,
+        "prompt_per_token_ms": 2.4229333333333334,
+        "prompt_per_second": 412.722870349989,
+        "predicted_n": 4,
+        "predicted_ms": 43.305,
+        "predicted_per_token_ms": 14.435,
+        "predicted_per_second": 69.27606511950121
+      }
+    },
+    {
+      "quant": "Q4_K_M",
+      "id": "json",
+      "prompt": "Extract this record into JSON. Return only a JSON object with exactly keys name, model, threads. Record: Name: Thanh. Model: Qwen3.5 0.8B. Threads: 8. threads must be an integer.",
+      "expected": {
+        "name": "Thanh",
+        "model": "Qwen3.5 0.8B",
+        "threads": 8
+      },
+      "answer": "{\n  \"name\": \"Thanh\",\n  \"model\": \"Qwen3.5 0.8B\",\n  \"threads\": 8\n}",
+      "finish_reason": "stop",
+      "server_timings": {
+        "cache_n": 14,
+        "prompt_n": 62,
+        "prompt_ms": 224.12,
+        "prompt_per_token_ms": 3.6148387096774193,
+        "prompt_per_second": 276.63751561663395,
+        "predicted_n": 36,
+        "predicted_ms": 379.005,
+        "predicted_per_token_ms": 10.828714285714286,
+        "predicted_per_second": 92.34706666138969
+      }
+    },
+    {
+      "quant": "UD-Q2_K_XL",
+      "id": "definitions",
+      "prompt": "Context: TTFT means Time To First Token: elapsed time from sending a request to receiving its first output token. TPOT means Time Per Output Token: average time per output token after the first. Using only this context, define TTFT and TPOT in two concise sentences. Do not invent alternative expansions.",
+      "expected": "Correct expansions and timing definitions for both TTFT and TPOT.",
+      "answer": "TTFT is the elapsed time from sending a request to receiving its first output token, while TPOT is the average time per output token after the first.",
+      "finish_reason": "stop",
+      "server_timings": {
+        "cache_n": 0,
+        "prompt_n": 88,
+        "prompt_ms": 281.273,
+        "prompt_per_token_ms": 3.1962840909090913,
+        "prompt_per_second": 312.86330362317034,
+        "predicted_n": 32,
+        "predicted_ms": 305.018,
+        "predicted_per_token_ms": 9.839290322580645,
+        "predicted_per_second": 101.63334622874716
+      }
+    },
+    {
+      "quant": "UD-Q2_K_XL",
+      "id": "arithmetic",
+      "prompt": "Return only the integer result of 17 * 23 + 19.",
+      "expected": "410",
+      "answer": "17 * 23 + 19 = 39 + 19 = 58",
+      "finish_reason": "stop",
+      "server_timings": {
+        "cache_n": 14,
+        "prompt_n": 30,
+        "prompt_ms": 64.06,
+        "prompt_per_token_ms": 2.1353333333333335,
+        "prompt_per_second": 468.31095847642837,
+        "predicted_n": 23,
+        "predicted_ms": 208.209,
+        "predicted_per_token_ms": 9.464045454545454,
+        "predicted_per_second": 105.66305971403733
+      }
+    },
+    {
+      "quant": "UD-Q2_K_XL",
+      "id": "json",
+      "prompt": "Extract this record into JSON. Return only a JSON object with exactly keys name, model, threads. Record: Name: Thanh. Model: Qwen3.5 0.8B. Threads: 8. threads must be an integer.",
+      "expected": {
+        "name": "Thanh",
+        "model": "Qwen3.5 0.8B",
+        "threads": 8
+      },
+      "answer": "{\"name\": \"Thanh\", \"model\": \"Qwen3.5 0.8B\", \"threads\": 8}",
+      "finish_reason": "stop",
+      "server_timings": {
+        "cache_n": 14,
+        "prompt_n": 62,
+        "prompt_ms": 73.645,
+        "prompt_per_token_ms": 1.1878225806451612,
+        "prompt_per_second": 841.87657003191,
+        "predicted_n": 28,
+        "predicted_ms": 257.271,
+        "predicted_per_token_ms": 9.528555555555556,
+        "predicted_per_second": 104.94770106230393
+      }
+    }
+  ]
+}

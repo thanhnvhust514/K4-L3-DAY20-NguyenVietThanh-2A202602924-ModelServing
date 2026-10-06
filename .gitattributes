@@ -1,0 +1,6 @@
+# Preserve generated measurement evidence byte-for-byte across platforms.
+benchmarks/*.csv -text
+benchmarks/*.json -text
+hardware.json -text
+models/active.json -text
+submission/screenshots/*.png binary

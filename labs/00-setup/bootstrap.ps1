@@ -1,10 +1,11 @@
-# Windows bootstrap: virtualenv + deps, then hand off to the cross-platform setup.py.
+﻿# Windows bootstrap: virtualenv + deps, then hand off to the cross-platform setup.py.
 # Works in both Windows PowerShell 5.1 (powershell.exe) and PowerShell 7+ (pwsh):
 #   powershell -ExecutionPolicy Bypass -File labs\00-setup\bootstrap.ps1
 #   pwsh       -ExecutionPolicy Bypass -File labs\00-setup\bootstrap.ps1
 #
 # Afterwards, use .\lab.ps1 <target> for every step docs/GUIDE.md writes as `make <target>`.
 $ErrorActionPreference = 'Stop'
+$env:PYTHONUTF8 = '1'
 Set-Location (Join-Path $PSScriptRoot '..\..')
 
 if (-not (Get-Command python -ErrorAction SilentlyContinue)) {

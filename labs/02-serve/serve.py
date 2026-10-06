@@ -66,6 +66,14 @@ def main() -> int:
         print(f"  endpoints: http://localhost:{port}/v1/embeddings")
     print(f"\n  {' '.join(cmd)}\n")
 
+    # Windows execv does not preserve quoting for arguments containing spaces.
+    # subprocess builds the Windows command line from the argument list correctly.
+    if sys.platform == "win32":
+        try:
+            return subprocess.run(cmd, check=False).returncode
+        except KeyboardInterrupt:
+            return 130
+
     try:
         os.execv(cmd[0], cmd)          # hand the terminal over; Ctrl-C stops the server
     except OSError:

@@ -12,6 +12,7 @@ and is new enough to load Gemma 4 (architecture "gemma4", April 2026).
 from __future__ import annotations
 
 import argparse
+import http.client
 import json
 import pathlib
 import platform
@@ -168,25 +169,35 @@ def download(asset: str, dest: pathlib.Path) -> pathlib.Path:
     out = dest.parent / asset
     print(f"==> Downloading {asset}")
     print(f"    {url}")
-    req = urllib.request.Request(url, headers={"User-Agent": "day20-lab"})
-    try:
-        with urllib.request.urlopen(req, timeout=120) as r, out.open("wb") as f:
-            total = int(r.headers.get("Content-Length") or 0)
-            done = 0
-            while chunk := r.read(1 << 16):
-                f.write(chunk)
-                done += len(chunk)
-                if total and sys.stdout.isatty():
-                    print(f"\r    {done / 1e6:6.1f} / {total / 1e6:.1f} MB "
-                          f"({100 * done / total:3.0f}%)", end="", flush=True)
+    partial = out.with_name(out.name + ".part")
+    for attempt in range(1, 4):
+        req = urllib.request.Request(url, headers={"User-Agent": "day20-lab"})
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r, partial.open("wb") as f:
+                total = int(r.headers.get("Content-Length") or 0)
+                done = 0
+                while chunk := r.read(1 << 16):
+                    f.write(chunk)
+                    done += len(chunk)
+                    if total and sys.stdout.isatty():
+                        print(f"\r    {done / 1e6:6.1f} / {total / 1e6:.1f} MB "
+                              f"({100 * done / total:3.0f}%)", end="", flush=True)
+            if total and done != total:
+                raise OSError(f"Incomplete download: received {done} of {total} bytes")
+            if asset.endswith(".zip") and not zipfile.is_zipfile(partial):
+                raise OSError(f"Invalid or incomplete ZIP ({done} bytes)")
+            partial.replace(out)
             print(f"\r    {done / 1e6:6.1f} MB downloaded" + " " * 20)
-    except (urllib.error.URLError, urllib.error.HTTPError) as exc:
-        labkit.die(
-            f"Download failed: {exc}",
-            f"Fetch it manually from https://github.com/{REPO}/releases/tag/{BUILD}",
-            f"and unzip into {dest.parent}/",
-        )
-    return out
+            return out
+        except (OSError, urllib.error.URLError, http.client.HTTPException) as exc:
+            partial.unlink(missing_ok=True)
+            print(f"    Download attempt {attempt}/3 failed: {exc}")
+            if attempt == 3:
+                labkit.die(
+                    f"Download failed: {exc}",
+                    f"Fetch it manually from https://github.com/{REPO}/releases/tag/{BUILD}",
+                    f"and unzip into {dest.parent}/",
+                )
 
 
 def extract(archive: pathlib.Path, into: pathlib.Path) -> None:
