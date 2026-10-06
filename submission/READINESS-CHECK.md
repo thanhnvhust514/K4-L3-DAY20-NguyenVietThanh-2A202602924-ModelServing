@@ -2,7 +2,7 @@
 
 ## Ảnh
 
-Đã xem trực tiếp cả 8 ảnh trong `submission/screenshots/`. Không xóa hoặc thay thế ảnh gốc.
+Đã xem trực tiếp 8 ảnh base và 2 ảnh bonus trong `submission/screenshots/`. Không xóa hoặc thay thế ảnh gốc.
 Các ảnh 03, 04, 05, 07, 08 được copy từ `C:/Users/ADMIN/Pictures/Screenshots/` vào repo.
 
 | File | Bằng chứng quan sát được |
@@ -15,8 +15,30 @@ Các ảnh 03, 04, 05, 07, 08 được copy từ `C:/Users/ADMIN/Pictures/Screen
 | 06-tune.png | Thread sweep, best = 8, 109.3 token/s, 1.00× so với default |
 | 07-batching.png | Peak busy slots = 3.90/4, processing = 4, deferred tới 45 |
 | 08-pipeline.png | 3 query, context, đáp án, latency từng stage, mean LLM = 4489.1 ms |
+| 09-bonus-gpu.png | GPU sweep 6 cấu hình, CPU 34.5 và best 136.3 token/s, speedup 3.95× |
+| 10-bonus-embedding.png | Endpoint thật 8081, vector 1024 chiều, 8 docs, cosine top-3 và timing batch 1/2/4/8/16 |
 
-Đủ cả 5 nhóm ảnh bắt buộc. Không cần chạy lại chỉ để bổ sung ảnh.
+Đủ cả 5 nhóm ảnh bắt buộc và 2 ảnh bonus. Không cần chạy lại chỉ để bổ sung ảnh.
+
+## Bonus bổ sung trong lần kiểm tra cuối
+
+- Có file GPU sweep MD/JSON và ảnh 09, nhưng trước lần kiểm tra này chưa được commit;
+  ảnh 10 cũng chưa được commit nên `lab.ps1 verify` báo exit 1. Đã phát hiện phần
+  nhận xét GPU chưa điền và REFLECTION §6 còn ghi không làm bonus.
+- Đã bổ sung nhận xét GPU và REFLECTION §6 theo số liệu thật: 34.54 → 136.33 token/s,
+  3.95×. `ngl=32` so với 99 chênh khoảng 0.12%, chưa đủ để khẳng định partial offload tốt hơn.
+- Đã tạo `benchmarks/bonus-embedding-serving.md` bằng timing đọc trực tiếp từ ảnh 10.
+  Source demo không ghi JSON; không dựng raw output. Batch 1 → 16 tăng wall time
+  khoảng 13.5%, throughput tính từ timing tăng 14.09×. Chỉ một phép đo mỗi batch,
+  có HTTP overhead và dùng chat GGUF mean pooling; không tuyên bố retrieval quality tốt.
+- Bằng chứng hiện có đáp ứng nội dung để grader đánh giá B2/B3/B5, tối đa +6.
+  Chưa có B1 (compile và so prebuilt), B4 (C1–C7 hoặc C10). C9 chỉ dùng cho B5.
+- Dữ liệu JSON GPU và mọi ảnh giữ nguyên. Backup báo cáo trước sửa ở
+  `runtime/submission-backups/20261006-bonus-check-180039/`.
+- Sau bổ sung, `lab.ps1 verify` exit 0 với 10 ảnh. Đã kiểm tra signature/CRC
+  của cả 10 PNG, JSON GPU khớp ảnh 09 và phép tính speedup trong báo cáo.
+  16 file dữ liệu/ảnh đã commit của base còn nguyên byte so với HEAD trước sửa.
+  Không còn placeholder bắt buộc trong các report benchmark.
 
 ## Đối chiếu cần giữ rõ
 
@@ -47,7 +69,9 @@ Các ảnh 03, 04, 05, 07, 08 được copy từ `C:/Users/ADMIN/Pictures/Screen
 - File `.env`, model weights, runtime và virtualenv không được track. Raw history/failures/exceptions CSV vẫn giữ trên máy nhưng được gitignore theo repo gốc.
 - Repo tên đúng mẫu, visibility PUBLIC đã được xác minh bằng GitHub CLI.
 - Đã commit kết quả base, checklist và quy tắc giữ nguyên byte dữ liệu. Bản clone sạch của commit `a4f820c`, không có model/runtime/venv, chạy `lab.ps1 verify` exit 0.
-- Đang xuất bản các commit hoàn thiện lên origin/main; commit được xuất bản xem lịch sử Git. Chưa nộp URL vào LMS.
+- Bản base đã xuất bản ở commit `8dfcf509e815a998c7506ea1226304631bb3cad7`;
+  lần kiểm tra GitHub xác nhận repo PUBLIC. Commit bổ sung bonus xem lịch sử Git.
+  Chưa thực hiện nộp URL vào LMS.
 - Không cần chạy lại phép đo hoặc làm bonus để đủ artifact base. Backup report trước khi hoàn thiện giữ trong `runtime/submission-backups/20261006-finalize/`.
 
 Các giới hạn bên trên vẫn cần giữ rõ trong báo cáo. `verify` pass xác nhận file và cấu trúc; không bảo đảm đáp án LLM đúng hoặc tự động bảo đảm điểm số.

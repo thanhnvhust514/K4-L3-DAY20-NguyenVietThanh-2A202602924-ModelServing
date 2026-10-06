@@ -133,7 +133,41 @@ Thread sweep có GPU offload cho plateau từ khoảng 4 threads; 8 threads ch�
 
 ## 6. Bonus *(optional)*
 
-Không làm bonus trong bài nộp này. Diagnostic 3 prompt ở 01-quality-comparison là phần kiểm tra chất lượng của base, không khai là bonus.
+Đã làm GPU offload sweep (B2), before/after trong sweep (B3) và embedding
+serving C9 (B5). Bằng chứng: `benchmarks/bonus-gpu-offload-sweep.md` + `.json`,
+`benchmarks/bonus-embedding-serving.md`, ảnh 09 và 10. Chưa làm B1 hoặc B4;
+các mục này tương ứng tối đa +6 theo rubric, điểm thực tế do grader đánh giá.
+
+**Before/after của bonus:** Qwen3.5 0.8B Q4_K_M, threads=8, cùng native
+`llama-bench tg128`, hai repetitions mỗi cấu hình:
+
+```
+before:  34.54 token/s (ngl=0, CPU-only)
+after:   136.33 token/s (ngl=32)
+speedup: 3.95×
+```
+
+Offload đưa phần tính toán và đọc weights sang GPU, phù hợp với cải thiện
+đo được; chưa tách compute khỏi bandwidth bằng profiler. `ngl=99` đạt 136.16
+token/s, chỉ thấp hơn 32 khoảng 0.12%, chưa đủ để kết luận 32 tốt hơn full
+offload. Không có bằng chứng hết VRAM hoặc spill. Không so native tg128 với
+HTTP baseline để suy ra gain; kết quả `make tune` của base không dùng cho B3.
+
+**C9:** endpoint embeddings thật trả vector 1024 chiều. Batch 1 → 16:
+HTTP wall time 2461.9 → 2795.0 ms, throughput hiển thị 0.4 → 5.7 texts/s;
+speedup tính từ timing là 14.09×. Embedding xử lý input để trả vector,
+không sinh output qua nhiều decode steps như chat. Static batch có thể
+chia sẻ overhead; chat cần continuous batching để request vào/ra theo step.
+Chat track 02 tăng users 10 → 50 lại giảm RPS và tăng P95: hai phép đo
+khác workload/đơn vị, chỉ so hình dạng regime. Autoscaler nên theo dõi riêng
+input/output tokens, queue và latency của từng endpoint.
+
+Demo dùng chat GGUF mean pooling, không phải embedding model chuyên dụng;
+top-1 đúng một query chưa chứng minh retrieval quality. Chỉ một timing mỗi
+batch và client tạo kết nối mới nên chưa xác nhận gain thuần từ GPU compute.
+Số liệu C9 chép từ ảnh thật 10, script không tự lưu JSON. C9 chưa có reranker
+và không thay N19 stub trong pipeline base. Diagnostic 3 prompt ở
+01-quality-comparison vẫn là kiểm tra chất lượng base, không khai bonus.
 
 ---
 
@@ -155,7 +189,7 @@ Không làm bonus trong bài nộp này. Diagnostic 3 prompt ở 01-quality-comp
 - [x] `benchmarks/03-integration-results.md` committed (`make pipeline`)
 - [x] Mọi section **"required — replace this line"** trong các file `benchmarks/*.md`
       đã được thay bằng nhận xét của bạn
-- [x] 8 screenshots trong `submission/screenshots/` (đủ 5 nhóm bắt buộc)
+- [x] 10 screenshots trong `submission/screenshots/` (đủ 5 nhóm bắt buộc và 2 ảnh bonus)
 - [x] `make verify` → **exit 0**
 - [x] Repo tên đúng mẫu `K4-L3-DAY20-HoVaTen-MSSV-ModelServing` (xem `docs/SUBMISSION.md`)
 - [x] Repo GitHub ở chế độ **public**
@@ -169,4 +203,4 @@ xem được → 0 điểm.
 
 ## 9. Khai báo sử dụng AI  *(xem `docs/RULES.md` §3)*
 
-Dùng Codex để đọc tài liệu, hướng dẫn chạy lab, debug lỗi encoding PowerShell, tải runtime ZIP và đường dẫn có dấu cách; tổng hợp thông tin máy và số liệu từ report. Các kết quả được đo trên laptop local. Codex hỗ trợ chạy diagnostic chất lượng, kiểm tra số liệu và soạn phần giải thích dựa trên bằng chứng, có ghi rõ giới hạn và giả thuyết. Người làm bài cần hiểu phần lập luận để trình bày với coach.
+Dùng Codex để đọc tài liệu, hướng dẫn chạy lab, debug lỗi encoding PowerShell, tải runtime ZIP và đường dẫn có dấu cách; tổng hợp thông tin máy và số liệu từ report. Các kết quả được đo trên laptop local. Codex hỗ trợ chạy diagnostic chất lượng, kiểm tra số liệu, chép timing embedding từ ảnh thật và soạn phần giải thích dựa trên bằng chứng, có ghi rõ giới hạn và giả thuyết. Người làm bài cần hiểu phần lập luận để trình bày với coach.
