@@ -37,25 +37,19 @@ Các ảnh 03, 04, 05, 07, 08 được copy từ `C:/Users/ADMIN/Pictures/Screen
 - Thread tuning không cải thiện so với default 8 threads; không báo 1.18× là speedup
   so với default. 1.18× là best so với slowest tested (1 thread).
 
-## Kết quả kiểm tra thiếu
+## Kết quả kiểm tra cuối
 
-Các artifact chạy base đã có: hardware.json, models/active.json, baseline/tuning,
-hai CSV load, batching MD/CSV, load report, integration MD/JSON và 8 ảnh.
+- Nội dung base hoàn chỉnh: REFLECTION, các report và 8 ảnh đã có; không còn placeholder ở phần bắt buộc.
+- `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\lab.ps1 verify`: exit 0 sau khi stage, và exit 0 sau commit `fc2f9ee`.
+- Đã kiểm tra JSON/CSV load khớp nhau, model manifest khớp hai file benchmark, 20/20 baseline requests, thread best, các peak metrics và mean của 3 query RAG.
+- Đã kiểm tra CRC của 8 PNG và đối chiếu hash các ảnh copy với ảnh gốc.
+- Đã đối chiếu hash dữ liệu JSON/CSV và ảnh với backup: bản local không đổi. `.gitattributes` giữ nguyên byte dữ liệu đo khi commit, gồm cả newline gốc Windows; không sửa số liệu để chữa cảnh báo whitespace của Git.
+- File `.env`, model weights, runtime và virtualenv không được track. Raw history/failures/exceptions CSV vẫn giữ trên máy nhưng được gitignore theo repo gốc.
+- Repo tên đúng mẫu, visibility PUBLIC đã được xác minh bằng GitHub CLI.
+- Đã commit kết quả base; đang hoàn tất commit checklist và newline preservation. Push/nộp LMS chưa thực hiện tại thời điểm ghi mục này.
+- Không cần chạy lại phép đo hoặc làm bonus để đủ artifact base. Backup report trước khi hoàn thiện giữ trong `runtime/submission-backups/20261006-finalize/`.
 
-`scripts/verify.py` hiện exit 1. Các việc còn lại:
-
-1. Điền ngày submit thật và 3 đoạn còn `_Answer here._` trong REFLECTION §3, §4, §5.
-2. Hoàn thiện section `required -- replace this line` trong 4 report:
-   - benchmarks/01-tuning-tg128.md
-   - benchmarks/02-server-results.md
-   - benchmarks/02-server-batching-u50.md
-   - benchmarks/03-integration-results.md
-3. Track/stage rồi commit các artifact và ảnh. Script dùng `git ls-files`, nên một
-   kết quả pass sau git add chưa thay thế cho git commit/push.
-4. Đối chiếu lại REFLECTION với report và chạy verify sau khi hoàn thiện.
-5. Push repo public và nộp URL vào LMS theo deadline thực tế. Chưa thực hiện trong lượt này.
-
-Không thiếu runtime/model hoặc phép đo base. Bonus chưa chạy và không bắt buộc.
+Các giới hạn bên trên vẫn cần giữ rõ trong báo cáo. `verify` pass xác nhận file và cấu trúc; không bảo đảm đáp án LLM đúng hoặc tự động bảo đảm điểm số.
 
 ## Giải thích để người làm bài tự hoàn thiện
 
